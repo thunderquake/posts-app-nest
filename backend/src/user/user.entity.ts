@@ -23,7 +23,17 @@ export class User {
   posts: Post[];
 
   @ManyToMany(() => User, (user) => user.following)
-  @JoinTable()
+  @JoinTable({
+    name: 'user_followers',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'followerId',
+      referencedColumnName: 'id',
+    },
+  })
   followers: User[];
 
   @ManyToMany(() => User, (user) => user.followers)

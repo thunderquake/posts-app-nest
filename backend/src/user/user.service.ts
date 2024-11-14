@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FollowUserDto, UpdateUserDto } from './dto/follow-user-dto';
+import { UnfollowUserDto } from './dto/unfollow-user-dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -27,19 +33,96 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async followUser(userId: string, followUserId: string): Promise<User> {
-    const user = await this.findById(userId);
-    const followUser = await this.findById(followUserId);
+  async getFollowers(userId: string): Promise<Partial<User>[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['followers'],
+    });
 
-    // Add the followUser to the following list of user
-    user.following.push(followUser);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-    // Add the user to the followers list of followUser
-    followUser.followers.push(user);
+    return user.followers.map((follower) => ({
+      id: follower.id,
+      name: follower.name,
+    }));
+  }
 
-    // Save both users to the database
-    await this.userRepository.save([user, followUser]);
+  async followUser(followUserDto: FollowUserDto): Promise<User> {
+    const { userId, targetUserId } = followUserDto;
 
-    return user;
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+    const targetUser = await this.userRepository.findOne({
+      where: { id: targetUserId },
+    });
+
+    if (!user || !targetUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (
+      user.following.some((followedUser) => followedUser.id === targetUserId)
+    ) {
+      throw new ConflictException('Already following this user');
+    }
+
+    user.following.push(targetUser);
+    await this.userRepository.save(user);
+
+    return this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+  }
+
+  async unfollowUser(unfollowUserDto: UnfollowUserDto): Promise<User> {
+    const { userId, targetUserId } = unfollowUserDto;
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+    const targetUser = await this.userRepository.findOne({
+      where: { id: targetUserId },
+    });
+
+    if (!user || !targetUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.following = user.following.filter(
+      (followedUser) => followedUser.id !== targetUserId,
+    );
+    await this.userRepository.save(user);
+
+    return this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+  }
+
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.preload({
+      id,
+      ...updateUserDto,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.userRepository.save(user);
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    const result = await this.userRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException('User not found');
+    }
   }
 }
