@@ -23,10 +23,8 @@ export class PostService {
   }
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
-    const { content } = createPostDto;
-
-    const post = new Post();
-    post.content = content;
+    const post = this.postRepository.create(createPostDto);
+    this.logger.log('Post ' + post.id + 'was created');
     return this.postRepository.save(post);
   }
 
