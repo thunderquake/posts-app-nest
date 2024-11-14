@@ -6,8 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { FollowUserDto, UpdateUserDto } from './dto/follow-user-dto';
+import { FollowUserDto } from './dto/follow-user-dto';
 import { UnfollowUserDto } from './dto/unfollow-user-dto';
+import { UpdateUserDto } from './dto/update-user-dto';
 import { User } from './user.entity';
 
 @Injectable()
