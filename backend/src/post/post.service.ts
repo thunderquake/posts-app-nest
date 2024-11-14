@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -12,6 +13,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+    private userService: UserService,
   ) {}
 
   async findAll(): Promise<Post[]> {
@@ -23,8 +25,13 @@ export class PostService {
   }
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
-    const post = this.postRepository.create(createPostDto);
-    this.logger.log('Post ' + post.id + 'was created');
+    const user = await this.userService.findById(createPostDto.userId);
+
+    const post = this.postRepository.create({
+      content: createPostDto.content,
+      userId: user.id,
+    });
+
     return this.postRepository.save(post);
   }
 
