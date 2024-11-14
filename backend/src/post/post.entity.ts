@@ -1,7 +1,10 @@
+import { User } from 'src/user/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,4 +26,11 @@ export class Post {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: string;
+
+  @ManyToOne(() => User, (user) => user.posts, { eager: false })
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @Column()
+  userId: string;
 }

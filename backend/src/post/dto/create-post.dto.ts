@@ -5,4 +5,8 @@ export class CreatePostDto {
   @IsNotEmpty()
   @Length(1, 500)
   content: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
 }
