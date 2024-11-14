@@ -8,9 +8,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { FollowUserDto, UpdateUserDto } from './dto/follow-user-dto';
+import { FollowUserDto } from './dto/follow-user-dto';
 import { GetFollowersDto } from './dto/get-followers-dto';
 import { UnfollowUserDto } from './dto/unfollow-user-dto';
+import { UpdateUserDto } from './dto/update-user-dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
