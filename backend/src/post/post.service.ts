@@ -4,6 +4,7 @@ import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { UUIDDto } from './dto/uuid.dto';
 import { Post } from './post.entity';
 
 @Injectable()
@@ -17,11 +18,14 @@ export class PostService {
   ) {}
 
   async findAll(): Promise<Post[]> {
-    return this.postRepository.find();
+    return this.postRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
-
-  async findOne(id: string): Promise<Post> {
-    return this.postRepository.findOne({ where: { id } });
+  async findOne(UUIDDto: UUIDDto): Promise<Post> {
+    return this.postRepository.findOne({ where: { id: UUIDDto.id } });
   }
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
@@ -35,8 +39,8 @@ export class PostService {
     return this.postRepository.save(post);
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto): Promise<Post> {
-    const post = await this.findOne(id);
+  async update(UUIDDto: UUIDDto, updatePostDto: UpdatePostDto): Promise<Post> {
+    const post = await this.findOne(UUIDDto);
     post.content = updatePostDto.content;
     return this.postRepository.save(post);
   }
