@@ -30,6 +30,13 @@ export class UserService {
     });
   }
 
+  async findByUser(name: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: { name },
+      relations: ['posts', 'followers', 'following'],
+    });
+  }
+
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }

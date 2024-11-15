@@ -19,6 +19,9 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Column()
+  hashedPassword: string;
+
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
