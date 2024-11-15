@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { UUIDDto } from './dto/uuid.dto';
 import { Post } from './post.entity';
 import { PostService } from './post.service';
 
@@ -22,8 +23,8 @@ export class PostController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Post> {
-    return this.postService.findOne(id);
+  async findOne(@Param() UUIDDto: UUIDDto) {
+    return this.postService.findOne(UUIDDto);
   }
 
   @PostRequest()
@@ -33,10 +34,10 @@ export class PostController {
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param() UUIDDto: UUIDDto,
     @Body() updatePostDto: UpdatePostDto,
-  ): Promise<Post> {
-    return this.postService.update(id, updatePostDto);
+  ) {
+    return this.postService.update(UUIDDto, updatePostDto);
   }
 
   @Delete(':id')

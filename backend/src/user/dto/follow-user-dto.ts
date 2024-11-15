@@ -1,9 +1,9 @@
 import { IsUUID } from 'class-validator';
 
 export class FollowUserDto {
-  @IsUUID()
+  @IsUUID(4)
   userId: string;
 
-  @IsUUID()
+  @IsUUID(4)
   targetUserId: string;
 }

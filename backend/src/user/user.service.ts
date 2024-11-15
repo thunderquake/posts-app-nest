@@ -113,7 +113,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(`User ${user.name}  not found`);
     }
 
     return this.userRepository.save(user);

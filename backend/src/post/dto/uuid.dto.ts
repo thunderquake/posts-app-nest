@@ -1,6 +1,6 @@
 import { IsUUID } from 'class-validator';
 
-export class GetFollowersDto {
+export class UUIDDto {
   @IsUUID(4)
-  userId: string;
+  id: string;
 }
