@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/user/user.service';
 import { SignInDto } from './dto/sign-in.dto';
@@ -6,7 +7,10 @@ import { SignUpDto } from './dto/sign-up.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<any> {
     const createdHashedPassword = await bcrypt.hash(signUpDto.pass, 10);
@@ -37,9 +41,10 @@ export class AuthService {
     if (!isPasswordMatching) {
       throw new UnauthorizedException('Invalid password');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { hashedPassword, ...result } = user;
 
-    return result;
+    const payload = { sub: user.id, username: user.name };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 }
