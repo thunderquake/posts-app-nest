@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthGuard } from './auth/auth.guard';
+import { AuthModule } from './auth/auth.module';
 import { Post } from './post/post.entity';
 import { PostModule } from './post/post.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     ConfigModule.forRoot({
       envFilePath: '.env.development.local',
       isGlobal: true,
@@ -26,7 +29,12 @@ import { AuthModule } from './auth/auth.module';
     }),
     PostModule,
     UserModule,
-    AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

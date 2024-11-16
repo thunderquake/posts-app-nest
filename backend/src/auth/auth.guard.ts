@@ -2,13 +2,13 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from 'src/decorators/public.decorator';
-import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,13 +17,14 @@ export class AuthGuard implements CanActivate {
     private reflector: Reflector,
   ) {}
 
+  private readonly logger = new Logger('Auth Service');
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
     if (isPublic) {
-      // 💡 See this condition
       return true;
     }
 
@@ -34,10 +35,11 @@ export class AuthGuard implements CanActivate {
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
+        secret: `${process.env.JWT_SECRET}`,
       });
       request['user'] = payload;
-    } catch {
+    } catch (e) {
+      this.logger.error('JWT verification failed', e);
       throw new UnauthorizedException();
     }
     return true;
