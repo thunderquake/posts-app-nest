@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { EmailVerifiedGuard } from 'src/mail-confirmation/email-verified.guard';
+import { EmailConfirmationModule } from 'src/mail-confirmation/mail-confirmation.module';
 import { UserModule } from 'src/user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
@@ -13,10 +15,11 @@ import { LocalStrategy } from './local.strategy';
   imports: [
     UserModule,
     PassportModule,
+    EmailConfirmationModule,
     JwtModule.register({
       global: true,
       secret: `${process.env.JWT_SECRET}`,
-      signOptions: { expiresIn: '1m' },
+      signOptions: { expiresIn: '30d' },
     }),
   ],
   controllers: [AuthController],
@@ -25,6 +28,10 @@ import { LocalStrategy } from './local.strategy';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: EmailVerifiedGuard,
     },
     LocalStrategy,
     JwtStrategy,

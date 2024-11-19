@@ -22,6 +22,9 @@ export class User {
   @Column()
   hashedPassword: string;
 
+  @Column({ default: false })
+  public isVerified: boolean;
+
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
