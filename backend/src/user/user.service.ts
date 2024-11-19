@@ -37,6 +37,17 @@ export class UserService {
     });
   }
 
+  async findByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: { email },
+      relations: ['posts', 'followers', 'following'],
+    });
+  }
+
+  async markEmailAsConfirmed(email: string) {
+    return this.userRepository.update({ email }, { isVerified: true });
+  }
+
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
