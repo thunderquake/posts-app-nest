@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from 'src/decorators/public.decorator';
 
@@ -14,6 +19,13 @@ export class EmailVerifiedGuard implements CanActivate {
 
     if (isPublic) {
       return true;
+    }
+
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    if (!user || !user.isVerified) {
+      throw new ForbiddenException('Email not verified');
     }
 
     return true;
