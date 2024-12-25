@@ -14,7 +14,21 @@ class postsService {
       const response = await this.instance.post("/auth/signup", { ...params });
       return response.data;
     } catch (e) {
-      throw new Error(`Failed to sign up + ${e}`);
+      if (axios.isAxiosError(e)) {
+        console.log(e.response?.data?.message);
+        const errorMessage =
+          (e.response?.data?.message as string).toLowerCase() ||
+          "An error occurred during signup.";
+        const errorStatus = e.response?.status || 500;
+
+        console.error(
+          `Signup failed with status ${errorStatus}: ${errorMessage}`
+        );
+
+        throw new Error(`Failed to sign up: ${errorMessage}`);
+      } else {
+        throw new Error("An unexpected error occurred during signup.");
+      }
     }
   }
 
@@ -23,7 +37,20 @@ class postsService {
       const response = await this.instance.post("/auth/login", { ...params });
       return response.data;
     } catch (e) {
-      throw new Error(`Failed to sign up + ${e}`);
+      if (axios.isAxiosError(e)) {
+        const errorMessage =
+          (e.response?.data?.message as string).toLowerCase() ||
+          "An error occurred during login.";
+        const errorStatus = e.response?.status || 500;
+
+        console.error(
+          `Login failed with status ${errorStatus}: ${errorMessage}`
+        );
+
+        throw new Error(`Failed to log in: ${errorMessage}`);
+      } else {
+        throw new Error("An unexpected error occurred during login.");
+      }
     }
   }
 }

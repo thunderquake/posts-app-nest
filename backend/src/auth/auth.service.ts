@@ -17,6 +17,18 @@ export class AuthService {
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<any> {
+    const existingUser = await this.userService.findByEmail(signUpDto.email);
+    if (existingUser) {
+      throw new ForbiddenException('Email is already registered');
+    }
+
+    const existingUsername = await this.userService.findByUser(
+      signUpDto.username,
+    );
+    if (existingUsername) {
+      throw new ForbiddenException('Username is already taken');
+    }
+
     const createdHashedPassword = await bcrypt.hash(signUpDto.pass, 10);
 
     const user = await this.userService.create({
