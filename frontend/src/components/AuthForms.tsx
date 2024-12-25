@@ -15,11 +15,11 @@ import postsService from "@/services/postsService";
 import { useAuthStore } from "@/stores/authStore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { UUID } from "crypto";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ErrorResponse } from "react-router-dom";
 
 type LoginFormData = {
   username: string;
@@ -32,9 +32,17 @@ type SignupFormData = {
   pass: string;
 };
 
+interface ErrorResponse {
+  statusCode: number;
+  message: string;
+}
+
 export default function AuthForms() {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
+
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [signupError, setSignupError] = useState<string | null>(null);
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
@@ -50,8 +58,9 @@ export default function AuthForms() {
       useAuthStore.getState().login(access_token, userId);
       console.log("Login successful");
     },
-    onError: (error: ErrorResponse) => {
-      console.error("Login failed", error);
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.log("debug error" + error.message);
+      setLoginError(error.message);
     },
   });
 
@@ -60,8 +69,9 @@ export default function AuthForms() {
     onSuccess: () => {
       console.log("Signup successful");
     },
-    onError: (error) => {
-      console.error("Signup failed", error);
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.log("debug error" + error.message);
+      setSignupError(error.message);
     },
   });
 
@@ -69,6 +79,7 @@ export default function AuthForms() {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
     formState: { errors: loginErrors },
+    clearErrors: clearLoginErrors,
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
   });
@@ -77,6 +88,7 @@ export default function AuthForms() {
     register: registerSignup,
     handleSubmit: handleSubmitSignup,
     formState: { errors: signupErrors },
+    clearErrors: clearSignupErrors,
   } = useForm<SignupFormData>({
     resolver: yupResolver(signupSchema),
   });
@@ -87,6 +99,14 @@ export default function AuthForms() {
 
   const onSubmitSignup = async (data: SignupFormData) => {
     signupMutation.mutate(data);
+  };
+
+  const handleLoginInputChange = () => {
+    setLoginError(null);
+  };
+
+  const handleSignupInputChange = () => {
+    setSignupError(null);
   };
 
   return (
@@ -103,6 +123,9 @@ export default function AuthForms() {
               <CardDescription>
                 Enter your username and password to login.
               </CardDescription>
+              {loginError && (
+                <p className="text-sm text-red-500">{loginError}</p>
+              )}
             </CardHeader>
             <form onSubmit={handleSubmitLogin(onSubmitLogin)}>
               <CardContent className="space-y-2">
@@ -112,6 +135,7 @@ export default function AuthForms() {
                     id="login-username"
                     type="text"
                     {...registerLogin("username")}
+                    onChange={handleLoginInputChange}
                   />
                   {loginErrors.username && (
                     <p className="text-sm text-red-500">
@@ -126,6 +150,7 @@ export default function AuthForms() {
                       id="login-password"
                       type={showLoginPassword ? "text" : "password"}
                       {...registerLogin("pass")}
+                      onChange={handleLoginInputChange}
                     />
                     <Button
                       type="button"
@@ -167,6 +192,9 @@ export default function AuthForms() {
               <CardDescription>
                 Create a new account to get started.
               </CardDescription>
+              {signupError && (
+                <p className="text-sm text-red-500">{signupError}</p>
+              )}
             </CardHeader>
             <form onSubmit={handleSubmitSignup(onSubmitSignup)}>
               <CardContent className="space-y-2">
@@ -176,6 +204,7 @@ export default function AuthForms() {
                     id="signup-username"
                     type="text"
                     {...registerSignup("username")}
+                    onChange={handleSignupInputChange}
                   />
                   {signupErrors.username && (
                     <p className="text-sm text-red-500">
@@ -189,6 +218,7 @@ export default function AuthForms() {
                     id="signup-email"
                     type="email"
                     {...registerSignup("email")}
+                    onChange={handleSignupInputChange}
                   />
                   {signupErrors.email && (
                     <p className="text-sm text-red-500">
@@ -203,6 +233,7 @@ export default function AuthForms() {
                       id="signup-password"
                       type={showSignupPassword ? "text" : "password"}
                       {...registerSignup("pass")}
+                      onChange={handleSignupInputChange}
                     />
                     <Button
                       type="button"
