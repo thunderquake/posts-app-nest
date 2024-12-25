@@ -20,6 +20,7 @@ import { UUID } from "crypto";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 type LoginFormData = {
   username: string;
@@ -44,6 +45,8 @@ export default function AuthForms() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [signupError, setSignupError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
       const response: { access_token: string; userId: UUID } =
@@ -57,6 +60,8 @@ export default function AuthForms() {
 
       useAuthStore.getState().login(access_token, userId);
       console.log("Login successful");
+      resetLoginForm();
+      navigate("/");
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.log("debug error" + error.message);
@@ -68,6 +73,7 @@ export default function AuthForms() {
     mutationFn: (data: SignupFormData) => postsService.signUp(data),
     onSuccess: () => {
       console.log("Signup successful");
+      resetSignupForm();
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.log("debug error" + error.message);
@@ -79,7 +85,7 @@ export default function AuthForms() {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
     formState: { errors: loginErrors },
-    clearErrors: clearLoginErrors,
+    reset: resetLoginForm,
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
   });
@@ -88,7 +94,7 @@ export default function AuthForms() {
     register: registerSignup,
     handleSubmit: handleSubmitSignup,
     formState: { errors: signupErrors },
-    clearErrors: clearSignupErrors,
+    reset: resetSignupForm,
   } = useForm<SignupFormData>({
     resolver: yupResolver(signupSchema),
   });
