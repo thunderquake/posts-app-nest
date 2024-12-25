@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user-dto';
@@ -22,6 +23,15 @@ export class UserController {
   @Get()
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
+  }
+
+  @Get(':userId')
+  async findUserById(
+    @Param('userId') userId: string,
+    @Query('select') select?: string,
+  ): Promise<User> {
+    const selectedFields = select?.split(',') as (keyof User)[] | undefined;
+    return this.userService.findById(userId, { select: selectedFields });
   }
 
   @Get('followers')

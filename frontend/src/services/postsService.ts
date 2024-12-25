@@ -53,6 +53,37 @@ class postsService {
       }
     }
   }
+
+  async getUserDetails(userId: string, token: string) {
+    try {
+      const response = await this.instance.get(`/users/${userId}`, {
+        params: {
+          select: "name,email",
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const errorMessage =
+          (e.response?.data?.message as string).toLowerCase() ||
+          "An error occurred while fetching user details.";
+        const errorStatus = e.response?.status || 500;
+
+        console.error(
+          `Fetching user details failed with status ${errorStatus}: ${errorMessage}`
+        );
+
+        throw new Error(`Failed to fetch user details: ${errorMessage}`);
+      } else {
+        throw new Error(
+          "An unexpected error occurred while fetching user details."
+        );
+      }
+    }
+  }
 }
 
 export default new postsService();

@@ -23,13 +23,15 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(
+    id: string,
+    options?: { select?: (keyof User)[] },
+  ): Promise<User> {
     return this.userRepository.findOne({
       where: { id },
-      relations: ['posts', 'followers', 'following'],
+      select: options?.select,
     });
   }
-
   async findByUser(name: string): Promise<User> {
     return this.userRepository.findOne({
       where: { name },
