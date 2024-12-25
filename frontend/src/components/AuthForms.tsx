@@ -11,26 +11,59 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { loginSchema, signupSchema } from "@/schemas/authSchemas";
+import postsService from "@/services/postsService";
+import { useAuthStore } from "@/stores/authStore";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import { UUID } from "crypto";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { ErrorResponse } from "react-router-dom";
 
 type LoginFormData = {
-  email: string;
-  password: string;
+  username: string;
+  pass: string;
 };
 
 type SignupFormData = {
-  name: string;
+  username: string;
   email: string;
-  password: string;
+  pass: string;
 };
 
 export default function AuthForms() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
+
+  const loginMutation = useMutation({
+    mutationFn: async (data: LoginFormData) => {
+      const response: { access_token: string; userId: UUID } =
+        await postsService.logIn(data);
+
+      console.log(response);
+      return response;
+    },
+    onSuccess: (response) => {
+      const { access_token, userId } = response;
+
+      useAuthStore.getState().login(access_token, userId);
+      console.log("Login successful");
+    },
+    onError: (error: ErrorResponse) => {
+      console.error("Login failed", error);
+    },
+  });
+
+  const signupMutation = useMutation({
+    mutationFn: (data: SignupFormData) => postsService.signUp(data),
+    onSuccess: () => {
+      console.log("Signup successful");
+    },
+    onError: (error) => {
+      console.error("Signup failed", error);
+    },
+  });
 
   const {
     register: registerLogin,
@@ -49,17 +82,11 @@ export default function AuthForms() {
   });
 
   const onSubmitLogin = async (data: LoginFormData) => {
-    setIsLoading(true);
-
-    console.log(data);
-    setIsLoading(false);
+    loginMutation.mutate(data);
   };
 
   const onSubmitSignup = async (data: SignupFormData) => {
-    setIsLoading(true);
-
-    console.log(data);
-    setIsLoading(false);
+    signupMutation.mutate(data);
   };
 
   return (
@@ -74,21 +101,21 @@ export default function AuthForms() {
             <CardHeader>
               <CardTitle>Login</CardTitle>
               <CardDescription>
-                Enter your email and password to login.
+                Enter your username and password to login.
               </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmitLogin(onSubmitLogin)}>
               <CardContent className="space-y-2">
                 <div className="space-y-1">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-username">Username</Label>
                   <Input
-                    id="login-email"
-                    type="email"
-                    {...registerLogin("email")}
+                    id="login-username"
+                    type="text"
+                    {...registerLogin("username")}
                   />
-                  {loginErrors.email && (
+                  {loginErrors.username && (
                     <p className="text-sm text-red-500">
-                      {loginErrors.email.message}
+                      {loginErrors.username.message}
                     </p>
                   )}
                 </div>
@@ -98,7 +125,7 @@ export default function AuthForms() {
                     <Input
                       id="login-password"
                       type={showLoginPassword ? "text" : "password"}
-                      {...registerLogin("password")}
+                      {...registerLogin("pass")}
                     />
                     <Button
                       type="button"
@@ -114,16 +141,20 @@ export default function AuthForms() {
                       )}
                     </Button>
                   </div>
-                  {loginErrors.password && (
+                  {loginErrors.pass && (
                     <p className="text-sm text-red-500">
-                      {loginErrors.password.message}
+                      {loginErrors.pass.message}
                     </p>
                   )}
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Logging in..." : "Login"}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending ? "Logging in..." : "Login"}
                 </Button>
               </CardFooter>
             </form>
@@ -140,15 +171,15 @@ export default function AuthForms() {
             <form onSubmit={handleSubmitSignup(onSubmitSignup)}>
               <CardContent className="space-y-2">
                 <div className="space-y-1">
-                  <Label htmlFor="signup-name">Name</Label>
+                  <Label htmlFor="signup-username">Username</Label>
                   <Input
-                    id="signup-name"
+                    id="signup-username"
                     type="text"
-                    {...registerSignup("name")}
+                    {...registerSignup("username")}
                   />
-                  {signupErrors.name && (
+                  {signupErrors.username && (
                     <p className="text-sm text-red-500">
-                      {signupErrors.name.message}
+                      {signupErrors.username.message}
                     </p>
                   )}
                 </div>
@@ -171,7 +202,7 @@ export default function AuthForms() {
                     <Input
                       id="signup-password"
                       type={showSignupPassword ? "text" : "password"}
-                      {...registerSignup("password")}
+                      {...registerSignup("pass")}
                     />
                     <Button
                       type="button"
@@ -187,16 +218,20 @@ export default function AuthForms() {
                       )}
                     </Button>
                   </div>
-                  {signupErrors.password && (
+                  {signupErrors.pass && (
                     <p className="text-sm text-red-500">
-                      {signupErrors.password.message}
+                      {signupErrors.pass.message}
                     </p>
                   )}
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing up..." : "Sign Up"}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={signupMutation.isPending}
+                >
+                  {signupMutation.isPending ? "Signing up..." : "Sign Up"}
                 </Button>
               </CardFooter>
             </form>
