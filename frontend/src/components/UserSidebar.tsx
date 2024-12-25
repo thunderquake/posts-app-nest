@@ -18,7 +18,7 @@ interface SidebarProps {
 
 export function AppSidebar({ username, email }: SidebarProps) {
   return (
-    <Sidebar>
+    <Sidebar variant="sidebar">
       <SidebarHeader>
         <div className="p-4">
           <h2 className="text-lg font-semibold">{username}</h2>

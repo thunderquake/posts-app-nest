@@ -7,6 +7,14 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { UUIDDto } from './dto/uuid.dto';
 import { Post } from './post.entity';
 
+export default interface IPost {
+  id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  user: string;
+}
 @Injectable()
 export class PostService {
   private readonly logger = new Logger('Post Service');
@@ -17,13 +25,25 @@ export class PostService {
     private userService: UserService,
   ) {}
 
-  async findAll(): Promise<Post[]> {
-    return this.postRepository.find({
-      order: {
-        createdAt: 'DESC',
-      },
-    });
+  async findAll(): Promise<IPost[]> {
+    return this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user') // Join the user entity
+      .addSelect('user.name') // Only select the user's name
+      .orderBy('post.createdAt', 'DESC') // Order posts by createdAt
+      .getMany()
+      .then((posts) =>
+        posts.map((post) => ({
+          id: post.id,
+          content: post.content,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          userId: post.user.id,
+          user: post.user.name,
+        })),
+      );
   }
+
   async findOne(UUIDDto: UUIDDto): Promise<Post> {
     return this.postRepository.findOne({ where: { id: UUIDDto.id } });
   }

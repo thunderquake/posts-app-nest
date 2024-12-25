@@ -11,14 +11,14 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UUIDDto } from './dto/uuid.dto';
 import { Post } from './post.entity';
-import { PostService } from './post.service';
+import IPost, { PostService } from './post.service';
 
 @Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  async findAll(): Promise<Post[]> {
+  async findAll(): Promise<IPost[]> {
     return this.postService.findAll();
   }
 

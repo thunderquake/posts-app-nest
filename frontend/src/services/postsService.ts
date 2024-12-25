@@ -84,6 +84,32 @@ class postsService {
       }
     }
   }
+
+  async getAllPosts(token: string) {
+    try {
+      const response = await this.instance.get("/posts", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const errorMessage =
+          (e.response?.data?.message as string).toLowerCase() ||
+          "An error occurred while fetching posts.";
+        const errorStatus = e.response?.status || 500;
+
+        console.error(
+          `Fetching posts failed with status ${errorStatus}: ${errorMessage}`
+        );
+
+        throw new Error(`Failed to fetch posts: ${errorMessage}`);
+      } else {
+        throw new Error("An unexpected error occurred while fetching posts.");
+      }
+    }
+  }
 }
 
 export default new postsService();
