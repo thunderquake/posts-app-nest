@@ -1,4 +1,5 @@
 import ErrorPage from "@/pages/ErrorPage";
+import MainPage from "@/pages/MainPage";
 import NotFoundPage from "@/pages/NotFound";
 import SignUpPage from "@/pages/SignUpPage";
 import { createBrowserRouter } from "react-router-dom";
@@ -6,7 +7,7 @@ import { createBrowserRouter } from "react-router-dom";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <SignUpPage />,
+    element: <MainPage />,
     errorElement: <ErrorPage />,
   },
   {

@@ -55,11 +55,23 @@ export default function AuthForms() {
       console.log(response);
       return response;
     },
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const { access_token, userId } = response;
 
       useAuthStore.getState().login(access_token, userId);
+
+      console.log(userId);
+
+      const userDetails = await postsService.getUserDetails(
+        userId,
+        access_token
+      );
+
+      const { name, email } = userDetails;
+      useAuthStore.getState().setUserDetails(name, email);
+
       console.log("Login successful");
+
       resetLoginForm();
       navigate("/");
     },
