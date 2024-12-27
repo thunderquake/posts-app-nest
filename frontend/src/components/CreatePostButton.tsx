@@ -22,8 +22,7 @@ export function CreatePostButton({ token }: { token: string }) {
     const formData = { content, userId };
 
     try {
-      const result = await postsService.createPost(token, formData);
-      console.log(result.message);
+      await postsService.createPost(token, formData);
       setContent("");
       setOpen(false);
       navigate(0);

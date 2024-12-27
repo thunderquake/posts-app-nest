@@ -51,16 +51,12 @@ export default function AuthForms() {
     mutationFn: async (data: LoginFormData) => {
       const response: { access_token: string; userId: UUID } =
         await postsService.logIn(data);
-
-      console.log(response);
       return response;
     },
     onSuccess: async (response) => {
       const { access_token, userId } = response;
 
       useAuthStore.getState().login(access_token, userId);
-
-      console.log(userId);
 
       const userDetails = await postsService.getUserDetails(
         userId,
@@ -76,7 +72,6 @@ export default function AuthForms() {
       navigate("/");
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      console.log("debug error" + error.message);
       setLoginError(error.message);
     },
   });
@@ -88,7 +83,6 @@ export default function AuthForms() {
       resetSignupForm();
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      console.log("debug error" + error.message);
       setSignupError(error.message);
     },
   });

@@ -19,7 +19,6 @@ class postsService {
       return response.data;
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response?.data?.message);
         const errorMessage =
           (e.response?.data?.message as string).toLowerCase() ||
           "An error occurred during signup.";
