@@ -4,6 +4,16 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PostContentModal from "./PostContentModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { Dialog } from "./ui/dialog";
 import {
@@ -36,6 +46,8 @@ export function PostList({ posts, token }: IPostListProps) {
   const [content, setContent] = useState(posts[0]?.content || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
+  const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleOpenChange = (postId: string, isOpen: boolean) => {
@@ -54,12 +66,7 @@ export function PostList({ posts, token }: IPostListProps) {
 
     try {
       if (selectedPost) {
-        const result = await postsService.editPost(
-          token,
-          selectedPost.id,
-          content
-        );
-        console.log(result);
+        await postsService.editPost(token, selectedPost.id, content);
         setOpenEdit(false);
         navigate(0);
         setContent("");
@@ -68,6 +75,22 @@ export function PostList({ posts, token }: IPostListProps) {
       console.error("Error editing post:", error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const confirmDelete = (id: string) => {
+    setPostToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!postToDelete) return;
+    try {
+      await postsService.deletePost(token, postToDelete);
+      setDeleteDialogOpen(false);
+      navigate(0);
+    } catch (error) {
+      console.error("Error deleting post:", error);
     }
   };
 
@@ -105,7 +128,10 @@ export function PostList({ posts, token }: IPostListProps) {
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-red-600">
+                  <DropdownMenuItem
+                    className="text-red-600"
+                    onClick={() => confirmDelete(post.id)}
+                  >
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -130,6 +156,21 @@ export function PostList({ posts, token }: IPostListProps) {
           />
         </Dialog>
       )}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this post? This action cannot be
+              undone
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
