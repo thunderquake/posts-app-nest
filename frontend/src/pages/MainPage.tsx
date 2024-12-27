@@ -1,7 +1,8 @@
+import { CreatePostButton } from "@/components/CreatePostButton";
 import IPost, { PostList } from "@/components/PostList";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/UserSidebar";
-import postsService from "@/services/postsService"; // Adjust import based on your file structure
+import postsService from "@/services/postsService";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -53,6 +54,9 @@ const MainPage = () => {
           ) : (
             <PostList posts={posts} />
           )}
+        </div>
+        <div className="fixed bottom-6 right-6">
+          <CreatePostButton token={token} />
         </div>
       </div>
     </SidebarProvider>
