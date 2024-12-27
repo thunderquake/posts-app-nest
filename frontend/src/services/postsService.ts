@@ -166,6 +166,30 @@ class postsService {
       }
     }
   }
+
+  async deletePost(token: string, postId: string) {
+    try {
+      const response = await this.instance.delete(`/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const errorMessage =
+          (e.response?.data?.message as string).toLowerCase() ||
+          "An error occurred while deleting post.";
+        const errorStatus = e.response?.status || 500;
+
+        console.error(
+          `Deleting post failed with status ${errorStatus}: ${errorMessage}`
+        );
+
+        throw new Error(`Failed to delete post: ${errorMessage}`);
+      } else {
+        throw new Error("An unexpected error occurred while deleting post.");
+      }
+    }
+  }
 }
 
 export default new postsService();
