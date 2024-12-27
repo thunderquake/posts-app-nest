@@ -1,4 +1,8 @@
-import { LogInParams, SignUpParams } from "@/types/postsServiceTypes";
+import {
+  LogInParams,
+  PostParams,
+  SignUpParams,
+} from "@/types/postsServiceTypes";
 import axios, { AxiosInstance } from "axios";
 
 class postsService {
@@ -107,6 +111,30 @@ class postsService {
         throw new Error(`Failed to fetch posts: ${errorMessage}`);
       } else {
         throw new Error("An unexpected error occurred while fetching posts.");
+      }
+    }
+  }
+
+  async createPost(token: string, post: PostParams) {
+    try {
+      const response = await this.instance.post("/posts", post, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const errorMessage =
+          (e.response?.data?.message as string).toLowerCase() ||
+          "An error occurred while creating post.";
+        const errorStatus = e.response?.status || 500;
+
+        console.error(
+          `Creating post failed with status ${errorStatus}: ${errorMessage}`
+        );
+
+        throw new Error(`Failed to create post: ${errorMessage}`);
+      } else {
+        throw new Error("An unexpected error occurred while creating post.");
       }
     }
   }
