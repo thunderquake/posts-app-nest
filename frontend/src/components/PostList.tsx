@@ -1,7 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import postsService from "@/services/postsService";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PostContentModal from "./PostContentModal";
 import { Button } from "./ui/button";
+import { Dialog } from "./ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,18 +27,49 @@ export default interface IPost {
 
 interface IPostListProps {
   posts: IPost[];
+  token: string;
 }
 
-export function PostList({ posts }: IPostListProps) {
+export function PostList({ posts, token }: IPostListProps) {
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
+  const [openEdit, setOpenEdit] = useState(false);
+  const [content, setContent] = useState(posts[0]?.content || "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
+  const navigate = useNavigate();
 
   const handleOpenChange = (postId: string, isOpen: boolean) => {
     setOpenMenus((prev) => ({ ...prev, [postId]: isOpen }));
   };
 
-  function handleEdit(id: string): void {
-    throw new Error("Function not implemented.");
-  }
+  const handleEdit = (post: IPost) => {
+    setSelectedPost(post);
+    setContent(post.content);
+    setOpenEdit(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      if (selectedPost) {
+        const result = await postsService.editPost(
+          token,
+          selectedPost.id,
+          content
+        );
+        console.log(result);
+        setOpenEdit(false);
+        navigate(0);
+        setContent("");
+      }
+    } catch (error) {
+      console.error("Error editing post:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="space-y-4 w-full p-10">
@@ -45,6 +80,12 @@ export function PostList({ posts }: IPostListProps) {
               <p className="font-bold">{post.user}</p>
               <CardTitle className="text-sm text-muted-foreground">
                 Posted on {new Date(post.createdAt).toLocaleString()}
+                {post.createdAt !== post.updatedAt && (
+                  <span>
+                    {" "}
+                    (Edited on {new Date(post.updatedAt).toLocaleString()})
+                  </span>
+                )}
               </CardTitle>
             </div>
             <DropdownMenu
@@ -60,7 +101,7 @@ export function PostList({ posts }: IPostListProps) {
               <DropdownMenuContent align="end" className="w-[200px]">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => handleEdit(post.id)}>
+                  <DropdownMenuItem onClick={() => handleEdit(post)}>
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -76,6 +117,19 @@ export function PostList({ posts }: IPostListProps) {
           </CardContent>
         </Card>
       ))}
+      {selectedPost && (
+        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+          <PostContentModal
+            content={content}
+            open={openEdit}
+            onOpenChange={setOpenEdit}
+            setContent={setContent}
+            isSubmitting={isSubmitting}
+            handleSubmit={handleSubmit}
+            title="Edit post"
+          />
+        </Dialog>
+      )}
     </div>
   );
 }
