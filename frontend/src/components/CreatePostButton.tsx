@@ -1,16 +1,12 @@
+import PostContentModal from "@/components/PostContentModal";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+import { DialogTrigger } from "@/components/ui/dialog";
 import postsService from "@/services/postsService";
 import { useAuthStore } from "@/stores/authStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { Dialog } from "@/components/ui/dialog";
 
 export function CreatePostButton({ token }: { token: string }) {
   const [open, setOpen] = useState(false);
@@ -39,31 +35,29 @@ export function CreatePostButton({ token }: { token: string }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="icon" className="rounded-full p-6">
-          <p className="text-3xl">+</p>
-          <span className="sr-only">Create new post</span>
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create a new post</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Textarea
-            placeholder="What's on your mind?"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={4}
-            className="w-full"
-          />
-          <Button type="submit" disabled={isSubmitting || !content.trim()}>
-            {isSubmitting ? "Creating..." : "Create Post"}
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button
+            size="icon"
+            className="rounded-full p-6"
+            onClick={() => setOpen(true)}
+          >
+            <p className="text-3xl">+</p>
+            <span className="sr-only">Create new post</span>
           </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </DialogTrigger>
+        <PostContentModal
+          open={open}
+          onOpenChange={setOpen}
+          content={content}
+          setContent={setContent}
+          isSubmitting={isSubmitting}
+          handleSubmit={handleSubmit}
+          title="Create a new post"
+        />
+      </Dialog>
+    </>
   );
 }
 

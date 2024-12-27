@@ -138,6 +138,30 @@ class postsService {
       }
     }
   }
+
+  async editPost(token: string, postId: string, content: string) {
+    try {
+      const response = await this.instance.put(`/posts/${postId}`, content, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const errorMessage =
+          (e.response?.data?.message as string).toLowerCase() ||
+          "An error occurred while editing post.";
+        const errorStatus = e.response?.status || 500;
+
+        console.error(
+          `Editing post failed with status ${errorStatus}: ${errorMessage}`
+        );
+
+        throw new Error(`Failed to edit post: ${errorMessage}`);
+      } else {
+        throw new Error("An unexpected error occurred while editing post.");
+      }
+    }
+  }
 }
 
 export default new postsService();
