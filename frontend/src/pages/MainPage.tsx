@@ -11,6 +11,7 @@ const MainPage = () => {
   const username = useAuthStore?.getState()?.username || "";
   const email = useAuthStore?.getState()?.email || "";
   const token = useAuthStore?.getState()?.access_token || "";
+  const currentUserId = useAuthStore?.getState()?.userId || "";
 
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,7 +53,11 @@ const MainPage = () => {
           ) : error ? (
             <div>{error}</div>
           ) : (
-            <PostList posts={posts} token={token} />
+            <PostList
+              posts={posts}
+              token={token}
+              currentUserId={currentUserId}
+            />
           )}
         </div>
         <div className="fixed bottom-6 right-6">
