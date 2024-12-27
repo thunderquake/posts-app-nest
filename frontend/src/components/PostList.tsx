@@ -38,9 +38,10 @@ export default interface IPost {
 interface IPostListProps {
   posts: IPost[];
   token: string;
+  currentUserId: string;
 }
 
-export function PostList({ posts, token }: IPostListProps) {
+export function PostList({ posts, token, currentUserId }: IPostListProps) {
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
   const [openEdit, setOpenEdit] = useState(false);
   const [content, setContent] = useState(posts[0]?.content || "");
@@ -111,32 +112,34 @@ export function PostList({ posts, token }: IPostListProps) {
                 )}
               </CardTitle>
             </div>
-            <DropdownMenu
-              open={openMenus[post.id]}
-              onOpenChange={(isOpen) => handleOpenChange(post.id, isOpen)}
-            >
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => handleEdit(post)}>
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="text-red-600"
-                    onClick={() => confirmDelete(post.id)}
-                  >
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {post.userId === currentUserId && (
+              <DropdownMenu
+                open={openMenus[post.id]}
+                onOpenChange={(isOpen) => handleOpenChange(post.id, isOpen)}
+              >
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <MoreHorizontal className="h-4 w-4" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => handleEdit(post)}>
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-600"
+                      onClick={() => confirmDelete(post.id)}
+                    >
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </CardHeader>
           <CardContent>
             <p>{post.content}</p>
