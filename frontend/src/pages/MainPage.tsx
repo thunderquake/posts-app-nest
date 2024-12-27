@@ -52,7 +52,7 @@ const MainPage = () => {
           ) : error ? (
             <div>{error}</div>
           ) : (
-            <PostList posts={posts} />
+            <PostList posts={posts} token={token} />
           )}
         </div>
         <div className="fixed bottom-6 right-6">

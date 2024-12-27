@@ -141,9 +141,13 @@ class postsService {
 
   async editPost(token: string, postId: string, content: string) {
     try {
-      const response = await this.instance.put(`/posts/${postId}`, content, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await this.instance.put(
+        `/posts/${postId}`,
+        { content: content },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response.data;
     } catch (e) {
       if (axios.isAxiosError(e)) {
