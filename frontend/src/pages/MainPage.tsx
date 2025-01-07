@@ -1,10 +1,10 @@
 import { CreatePostButton } from "@/components/CreatePostButton";
 import { IPost } from "@/components/PostCard";
 import { PostList } from "@/components/PostList";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/UserSidebar";
 import { useFetchPosts } from "@/services/posts/fetchAllPostsQuery";
 import { useAuthStore } from "@/stores/authStore";
+import { SidebarProvider } from "@ui/sidebar";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

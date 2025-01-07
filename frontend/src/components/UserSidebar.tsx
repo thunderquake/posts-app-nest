@@ -8,7 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@ui/sidebar";
 import { Home, User } from "lucide-react";
 
 interface SidebarProps {

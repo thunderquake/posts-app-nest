@@ -1,11 +1,10 @@
 import PostContentModal from "@/components/PostContentModal";
-import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
 import { useAuthStore } from "@/stores/authStore";
+import { Button } from "@ui/button";
+import { Dialog, DialogTrigger } from "@ui/dialog";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Dialog } from "@/components/ui/dialog";
 import { useCreatePost } from "@/services/posts/createPostMutation";
 
 export function CreatePostButton({ token }: { token: string }) {

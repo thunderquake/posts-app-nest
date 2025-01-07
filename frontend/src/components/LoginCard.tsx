@@ -1,4 +1,7 @@
-import { Button } from "@/components/ui/button";
+import { loginSchema } from "@/schemas/authSchemas";
+import { useLogin } from "@/services/auth/loginMutation";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Button } from "@ui/button";
 import {
   Card,
   CardContent,
@@ -6,12 +9,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { loginSchema } from "@/schemas/authSchemas";
-import { useLogin } from "@/services/auth/loginMutation";
-import { yupResolver } from "@hookform/resolvers/yup";
+} from "@ui/card";
+import { Input } from "@ui/input";
+import { Label } from "@ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
