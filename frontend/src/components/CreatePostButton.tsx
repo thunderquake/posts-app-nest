@@ -1,35 +1,30 @@
 import PostContentModal from "@/components/PostContentModal";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
-import postsService from "@/services/postsService";
 import { useAuthStore } from "@/stores/authStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Dialog } from "@/components/ui/dialog";
+import { useCreatePost } from "@/services/posts/createPostMutation";
 
 export function CreatePostButton({ token }: { token: string }) {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const userId = useAuthStore?.getState()?.userId || "";
+  const { createPost, isSubmitting } = useCreatePost();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    const formData = { content, userId };
 
     try {
-      await postsService.createPost(token, formData);
+      await createPost(token, content, userId);
       setContent("");
       setOpen(false);
       navigate(0);
     } catch (error) {
       console.error("Error creating post:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

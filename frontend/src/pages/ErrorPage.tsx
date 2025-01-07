@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AlertCircle, Home } from "lucide-react";
-import { useEffect } from "react";
 import { useRouteError } from "react-router-dom";
 
 interface RouteError {
@@ -18,10 +17,6 @@ interface RouteError {
 
 export default function ErrorPage() {
   const error = useRouteError() as RouteError;
-
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

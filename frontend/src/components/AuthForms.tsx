@@ -11,29 +11,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { loginSchema, signupSchema } from "@/schemas/authSchemas";
-import postsService from "@/services/postsService";
-import { useAuthStore } from "@/stores/authStore";
+import { useLogin } from "@/services/auth/loginMutation";
+import { useSignup } from "@/services/auth/signupMutation";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { UUID } from "crypto";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 
-type LoginFormData = {
+export interface LoginFormData {
   username: string;
   pass: string;
-};
+}
 
-type SignupFormData = {
+export interface SignupFormData {
   username: string;
   email: string;
   pass: string;
-};
+}
 
-interface ErrorResponse {
+export interface ErrorResponse {
   statusCode: number;
   message: string;
 }
@@ -45,47 +41,8 @@ export default function AuthForms() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [signupError, setSignupError] = useState<string | null>(null);
 
-  const navigate = useNavigate();
-
-  const loginMutation = useMutation({
-    mutationFn: async (data: LoginFormData) => {
-      const response: { access_token: string; userId: UUID } =
-        await postsService.logIn(data);
-      return response;
-    },
-    onSuccess: async (response) => {
-      const { access_token, userId } = response;
-
-      useAuthStore.getState().login(access_token, userId);
-
-      const userDetails = await postsService.getUserDetails(
-        userId,
-        access_token
-      );
-
-      const { name, email } = userDetails;
-      useAuthStore.getState().setUserDetails(name, email);
-
-      console.log("Login successful");
-
-      resetLoginForm();
-      navigate("/");
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      setLoginError(error.message);
-    },
-  });
-
-  const signupMutation = useMutation({
-    mutationFn: (data: SignupFormData) => postsService.signUp(data),
-    onSuccess: () => {
-      console.log("Signup successful");
-      resetSignupForm();
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      setSignupError(error.message);
-    },
-  });
+  const { loginMutation } = useLogin();
+  const signupMutation = useSignup(setSignupError);
 
   const {
     register: registerLogin,
@@ -107,10 +64,12 @@ export default function AuthForms() {
 
   const onSubmitLogin = async (data: LoginFormData) => {
     loginMutation.mutate(data);
+    resetLoginForm();
   };
 
   const onSubmitSignup = async (data: SignupFormData) => {
     signupMutation.mutate(data);
+    resetSignupForm();
   };
 
   const handleLoginInputChange = () => {

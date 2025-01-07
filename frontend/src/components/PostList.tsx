@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import postsService from "@/services/postsService";
+import { useDeletePost } from "@/services/posts/deletePostMutation";
+import { useEditPost } from "@/services/posts/editPostMutation";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -45,11 +46,13 @@ export function PostList({ posts, token, currentUserId }: IPostListProps) {
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
   const [openEdit, setOpenEdit] = useState(false);
   const [content, setContent] = useState(posts[0]?.content || "");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { editPost, isSubmitting } = useEditPost();
+  const { deletePost } = useDeletePost();
 
   const handleOpenChange = (postId: string, isOpen: boolean) => {
     setOpenMenus((prev) => ({ ...prev, [postId]: isOpen }));
@@ -63,19 +66,16 @@ export function PostList({ posts, token, currentUserId }: IPostListProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     try {
       if (selectedPost) {
-        await postsService.editPost(token, selectedPost.id, content);
+        await editPost(token, selectedPost.id, content);
         setOpenEdit(false);
         navigate(0);
         setContent("");
       }
     } catch (error) {
       console.error("Error editing post:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -87,7 +87,7 @@ export function PostList({ posts, token, currentUserId }: IPostListProps) {
   const handleDelete = async () => {
     if (!postToDelete) return;
     try {
-      await postsService.deletePost(token, postToDelete);
+      await deletePost({ token, postId: postToDelete });
       setDeleteDialogOpen(false);
       navigate(0);
     } catch (error) {

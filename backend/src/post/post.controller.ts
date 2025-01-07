@@ -27,6 +27,11 @@ export class PostController {
     return this.postService.findOne(UUIDDto);
   }
 
+  @Get('user/:id')
+  async findAllByUserId(@Param() UUIDDto: UUIDDto): Promise<IPost[]> {
+    return this.postService.findAllByUserId(UUIDDto.id);
+  }
+
   @PostRequest()
   async create(@Body() createPostDto: CreatePostDto): Promise<Post> {
     return this.postService.create(createPostDto);
