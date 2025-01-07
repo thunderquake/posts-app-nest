@@ -1,5 +1,6 @@
 import { CreatePostButton } from "@/components/CreatePostButton";
-import IPost, { PostList } from "@/components/PostList";
+import { IPost } from "@/components/PostCard";
+import { PostList } from "@/components/PostList";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/UserSidebar";
 import { useFetchPosts } from "@/services/posts/fetchAllPostsQuery";

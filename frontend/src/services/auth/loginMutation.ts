@@ -1,4 +1,4 @@
-import { LoginFormData } from "@/components/AuthForms";
+import { LoginFormData } from "@/components/LoginCard";
 import { useAuthStore } from "@/stores/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";

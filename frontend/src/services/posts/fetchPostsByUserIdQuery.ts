@@ -1,4 +1,4 @@
-import IPost from "@/components/PostList";
+import { IPost } from "@/components/PostCard";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import postsService from "../postsService";

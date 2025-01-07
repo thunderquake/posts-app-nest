@@ -1,4 +1,4 @@
-import { SignupFormData } from "@/components/AuthForms";
+import { SignupFormData } from "@/components/SignupCard";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "react-router-dom";
