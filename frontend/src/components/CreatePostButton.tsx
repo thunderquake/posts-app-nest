@@ -3,14 +3,12 @@ import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@ui/button";
 import { Dialog, DialogTrigger } from "@ui/dialog";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { useCreatePost } from "@/services/posts/createPostMutation";
+import { useCreatePost } from "@/services/posts/useCreatePost";
 
 export function CreatePostButton({ token }: { token: string }) {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
-  const navigate = useNavigate();
   const userId = useAuthStore?.getState()?.userId || "";
   const { createPost, isSubmitting } = useCreatePost();
 
@@ -18,10 +16,10 @@ export function CreatePostButton({ token }: { token: string }) {
     e.preventDefault();
 
     try {
-      await createPost(token, content, userId);
+      const result = await createPost({ token, post: { content, userId } });
+      console.log("Created post:", result);
       setContent("");
       setOpen(false);
-      navigate(0);
     } catch (error) {
       console.error("Error creating post:", error);
     }

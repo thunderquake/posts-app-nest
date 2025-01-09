@@ -1,5 +1,5 @@
 import { signupSchema } from "@/schemas/authSchemas";
-import { useSignup } from "@/services/auth/signupMutation";
+import { useSignup } from "@/services/auth/useSignup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@ui/button";
 import {

@@ -2,7 +2,7 @@ import { CreatePostButton } from "@/components/CreatePostButton";
 import { IPost } from "@/components/PostCard";
 import { PostList } from "@/components/PostList";
 import { AppSidebar } from "@/components/UserSidebar";
-import { useFetchPosts } from "@/services/posts/fetchAllPostsQuery";
+import { useFetchPosts } from "@/services/posts/useFetchPosts";
 import { useAuthStore } from "@/stores/authStore";
 import { SidebarProvider } from "@ui/sidebar";
 import { useEffect, useState } from "react";
@@ -15,7 +15,7 @@ const MainPage = () => {
   const currentUserId = useAuthStore?.getState()?.userId || "";
 
   const [posts, setPosts] = useState<IPost[]>([]);
-  const { posts: postsData, loading: isLoading, error } = useFetchPosts();
+  const { data: postsData, isLoading, error } = useFetchPosts();
 
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ const MainPage = () => {
           {isLoading ? (
             <div>Loading posts...</div>
           ) : error ? (
-            <div>Failed to fetch posts: {error}</div>
+            <div>Failed to fetch posts: {error.message}</div>
           ) : (
             <PostList
               posts={posts}

@@ -1,5 +1,5 @@
-import { useDeletePost } from "@/services/posts/deletePostMutation";
-import { useEditPost } from "@/services/posts/editPostMutation";
+import { useDeletePost } from "@/services/posts/useDeletePost";
+import { useEditPost } from "@/services/posts/useEditPost";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PostAlertDialog from "./PostAlertDialog";
@@ -39,9 +39,8 @@ export function PostList({ posts, token, currentUserId }: IPostListProps) {
     e.preventDefault();
     try {
       if (selectedPost) {
-        await editPost(token, selectedPost.id, content);
+        editPost({ token, postId: selectedPost.id, content });
         setOpenEdit(false);
-        navigate(0);
         setContent("");
       }
     } catch (error) {
