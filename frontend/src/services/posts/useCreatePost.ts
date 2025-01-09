@@ -1,7 +1,7 @@
 import { PostParams } from "@/types/postsServiceTypes";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { apiInstance, handleRequest } from "../postsService";
+import { useFetchPosts } from "./useFetchPosts";
 
 const createPostRequest = async ({
   token,
@@ -19,14 +19,12 @@ const createPostRequest = async ({
 };
 
 export const useCreatePost = () => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { refetch } = useFetchPosts();
 
   const { mutate: createPost, isPending: isSubmitting } = useMutation({
     mutationFn: createPostRequest,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      navigate(0);
+      refetch();
     },
     onError: (error) => {
       console.error("Error creating post:", error);

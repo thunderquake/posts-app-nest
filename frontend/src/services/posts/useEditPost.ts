@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { apiInstance, handleRequest } from "../postsService";
+import { useFetchPosts } from "./useFetchPosts";
 
 const editPostRequest = async (
   token: string,
@@ -20,8 +20,7 @@ const editPostRequest = async (
 };
 
 export const useEditPost = () => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { refetch } = useFetchPosts();
 
   const { mutate: editPost, isPending: isSubmitting } = useMutation({
     mutationFn: ({
@@ -34,8 +33,7 @@ export const useEditPost = () => {
       content: string;
     }) => editPostRequest(token, postId, content),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      navigate(0);
+      refetch();
     },
     onError: (error) => {
       console.error("Error editing post:", error);

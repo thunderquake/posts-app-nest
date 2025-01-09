@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { apiInstance, handleRequest } from "../postsService";
+import { useFetchPosts } from "./useFetchPosts";
 
 const deletePostRequest = async (token: string, postId: string) => {
   return handleRequest(async () => {
@@ -12,15 +12,13 @@ const deletePostRequest = async (token: string, postId: string) => {
 };
 
 export const useDeletePost = () => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { refetch } = useFetchPosts();
 
   const { mutateAsync: deletePost } = useMutation({
     mutationFn: ({ token, postId }: { token: string; postId: string }) =>
       deletePostRequest(token, postId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      navigate(0);
+      refetch();
     },
     onError: (error) => {
       console.error("Error deleting post:", error);

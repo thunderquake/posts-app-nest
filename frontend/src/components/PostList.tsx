@@ -1,7 +1,6 @@
 import { useDeletePost } from "@/services/posts/useDeletePost";
 import { useEditPost } from "@/services/posts/useEditPost";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import PostAlertDialog from "./PostAlertDialog";
 import PostCard, { IPost } from "./PostCard";
 import PostContentModal from "./PostContentModal";
@@ -20,7 +19,6 @@ export function PostList({ posts, token, currentUserId }: IPostListProps) {
   const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const navigate = useNavigate();
 
   const { editPost, isSubmitting } = useEditPost();
   const { deletePost } = useDeletePost();
@@ -58,7 +56,6 @@ export function PostList({ posts, token, currentUserId }: IPostListProps) {
     try {
       await deletePost({ token, postId: postToDelete });
       setDeleteDialogOpen(false);
-      navigate(0);
     } catch (error) {
       console.error("Error deleting post:", error);
     }
