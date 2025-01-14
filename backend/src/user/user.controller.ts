@@ -25,13 +25,15 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':userId')
-  async findUserById(
-    @Param('userId') userId: string,
+  @Get(':username')
+  async findUserByUsername(
+    @Param('username') username: string,
     @Query('select') select?: string,
   ): Promise<User> {
     const selectedFields = select?.split(',') as (keyof User)[] | undefined;
-    return this.userService.findById(userId, { select: selectedFields });
+    return this.userService.findByUsername(username, {
+      select: selectedFields,
+    });
   }
 
   @Get('followers')

@@ -23,6 +23,16 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async findByUsername(
+    username: string,
+    options?: { select?: (keyof User)[] },
+  ): Promise<User> {
+    return this.userRepository.findOne({
+      where: { name: username },
+      select: options?.select,
+    });
+  }
+
   async findById(
     id: string,
     options?: { select?: (keyof User)[] },
