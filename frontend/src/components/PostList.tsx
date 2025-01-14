@@ -62,7 +62,7 @@ export function PostList({ posts, token, currentUserId }: IPostListProps) {
   };
 
   return (
-    <div className="space-y-4 w-full p-10">
+    <div className="space-y-4 w-full mx-auto p-10">
       {posts.map((post) => (
         <PostCard
           key={post.id}
