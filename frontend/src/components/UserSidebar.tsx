@@ -40,7 +40,7 @@ export function AppSidebar({ username, email }: SidebarProps) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/profile">
+                  <a href={`/profile/${username}`}>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </a>

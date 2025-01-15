@@ -31,7 +31,12 @@ const PostCard = ({
     <Card className="max-w-screen-lg">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <p className="font-bold">{post.user}</p>
+          <a
+            href={`/profile/${post.user}`}
+            className="font-bold hover:underline"
+          >
+            {post.user}
+          </a>
           <CardTitle className="text-sm text-muted-foreground">
             Posted on {new Date(post.createdAt).toLocaleString()}
             {post.createdAt !== post.updatedAt && (

@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user-dto';
-import { GetFollowersDto } from './dto/get-followers-dto';
 import { UnfollowUserDto } from './dto/unfollow-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { User } from './user.entity';
@@ -36,10 +35,9 @@ export class UserController {
     });
   }
 
-  @Get('followers')
-  async getFollowers(@Body() getFollowersDto: GetFollowersDto) {
-    const { userId } = getFollowersDto;
-    return this.userService.getFollowers(userId);
+  @Get(':id/followers')
+  async getFollowers(@Param('id') id: string) {
+    return this.userService.getFollowers(id);
   }
 
   @Post()

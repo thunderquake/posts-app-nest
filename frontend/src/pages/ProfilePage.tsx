@@ -1,9 +1,19 @@
+import FollowerList from "@/components/FollowerList";
 import { PostList } from "@/components/PostList";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/UserSidebar";
 import { useFetchPostsByUserId } from "@/services/posts/useFetchPostsByUserId";
-import { useUser } from "@/services/posts/useUser";
+import { useFetchFollowers } from "@/services/users/useFetchFollowers";
+import { useFollowToggle } from "@/services/users/useFollowToggle";
+import { useUser } from "@/services/users/useUser";
 import { useAuthStore } from "@/stores/authStore";
 import { Separator } from "@radix-ui/react-separator";
 import { useParams } from "react-router-dom";
@@ -19,7 +29,13 @@ const ProfilePage = () => {
   const userResponse = useUser(urlUsername || "");
   const user = userResponse.data;
 
+  const userId = user?.id || "";
+
+  const { data: followers } = useFetchFollowers(userId);
+
   const posts = useFetchPostsByUserId(user?.id || "").data || [];
+
+  const { isFollowing, handleFollow } = useFollowToggle(sideUserId, userId);
 
   const isMyProfile = sideUsername === urlUsername;
 
@@ -51,6 +67,40 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
+          <div className="mx-6 mb-4">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="link" className="text-sm font-semibold p-0">
+                  {followers?.length} Followers
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Followers</DialogTitle>
+                </DialogHeader>
+                <FollowerList
+                  followers={
+                    followers?.map((f) => ({
+                      username: f.name,
+                      userId: f.id,
+                    })) || []
+                  }
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+          {!isMyProfile && (
+            <div className="justify-self-end mx-6 mb-4">
+              <Button
+                className="max-w-18"
+                onClick={() => handleFollow()}
+                variant={isFollowing ? "outline" : "default"}
+              >
+                {isFollowing ? "Unfollow" : "Follow"}
+              </Button>
+            </div>
+          )}
+
           <Separator className="bg-gray-300 p-[0.5px] w-full" />
           <div className="flex justify-center w-full">
             <div className="max-w-screen-lg w-full">
