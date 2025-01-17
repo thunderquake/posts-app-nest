@@ -19,14 +19,22 @@ import PostAlertDialog from "./PostAlertDialog";
 
 interface UserEditFormProps {
   initialData: User;
-  refetch: () => void;
+  refetchUser: () => void;
+  refetchPosts: () => void;
 }
 
-const UserEditForm = ({ initialData, refetch }: UserEditFormProps) => {
+const UserEditForm = ({
+  initialData,
+  refetchUser,
+  refetchPosts,
+}: UserEditFormProps) => {
   const [userData, setUserData] = useState<User>(initialData);
   const [open, setOpen] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const { mutate: editUser, isPending } = useEditUser(refetch);
+  const { mutate: editUser, isPending } = useEditUser(
+    refetchUser,
+    refetchPosts
+  );
   const [usernameError, setUsernameError] = useState<string | null>(null);
 
   const navigate = useNavigate();
@@ -54,7 +62,7 @@ const UserEditForm = ({ initialData, refetch }: UserEditFormProps) => {
     try {
       editUser({ userId: userData.id, updateData: userData });
       setOpen(false);
-      setUserData(initialData);
+      setUserData(userData);
       setShowConfirmDialog(false);
 
       useAuthStore.getState().setUserDetails(userData.name, userData.email);

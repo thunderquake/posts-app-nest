@@ -26,7 +26,10 @@ const updateUserRequest = async (
   });
 };
 
-export const useEditUser = (refetch: () => void) => {
+export const useEditUser = (
+  refetchUser: () => void,
+  refetchPosts: () => void
+) => {
   const token = useAuthStore?.getState()?.access_token || "";
 
   return useMutation({
@@ -39,7 +42,8 @@ export const useEditUser = (refetch: () => void) => {
     }) => updateUserRequest(userId, updateData, token),
 
     onSuccess: () => {
-      refetch();
+      refetchUser();
+      refetchPosts();
     },
   });
 };

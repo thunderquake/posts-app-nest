@@ -35,7 +35,9 @@ const ProfilePage = () => {
   const { data: followers } = useFetchFollowers(userId);
   const { data: following } = useFetchFollowing(userId);
 
-  const { data: posts, refetch } = useFetchPostsByUserId(user?.id || "");
+  const { data: posts, refetch: refetchPosts } = useFetchPostsByUserId(
+    user?.id || ""
+  );
 
   const { isFollowing, handleFollow } = useFollowToggle(sideUserId, userId);
 
@@ -63,7 +65,11 @@ const ProfilePage = () => {
             </div>
             <div className="justify-self-end mr-6">
               {isMyProfile ? (
-                <UserEditForm initialData={user} refetch={refetchUser} />
+                <UserEditForm
+                  initialData={user}
+                  refetchUser={refetchUser}
+                  refetchPosts={refetchPosts}
+                />
               ) : (
                 <div></div>
               )}
@@ -133,7 +139,7 @@ const ProfilePage = () => {
                 posts={posts ?? []}
                 token={token}
                 currentUserId={sideUserId}
-                refetch={refetch}
+                refetch={refetchPosts}
               />
             </div>
           </div>
