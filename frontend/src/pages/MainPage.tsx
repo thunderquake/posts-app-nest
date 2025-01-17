@@ -15,7 +15,7 @@ const MainPage = () => {
   const currentUserId = useAuthStore?.getState()?.userId || "";
 
   const [posts, setPosts] = useState<IPost[]>([]);
-  const { data: postsData, isLoading, error } = useFetchPosts();
+  const { data: postsData, isLoading, error, refetch } = useFetchPosts();
 
   const navigate = useNavigate();
 
@@ -46,6 +46,7 @@ const MainPage = () => {
               posts={posts}
               token={token}
               currentUserId={currentUserId}
+              refetch={refetch}
             />
           )}
         </div>

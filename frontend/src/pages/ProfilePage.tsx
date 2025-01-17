@@ -12,6 +12,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/UserSidebar";
 import { useFetchPostsByUserId } from "@/services/posts/useFetchPostsByUserId";
 import { useFetchFollowers } from "@/services/users/useFetchFollowers";
+import { useFetchFollowing } from "@/services/users/useFetchFollowing";
 import { useFollowToggle } from "@/services/users/useFollowToggle";
 import { useUser } from "@/services/users/useUser";
 import { useAuthStore } from "@/stores/authStore";
@@ -32,8 +33,9 @@ const ProfilePage = () => {
   const userId = user?.id || "";
 
   const { data: followers } = useFetchFollowers(userId);
+  const { data: following } = useFetchFollowing(userId);
 
-  const posts = useFetchPostsByUserId(user?.id || "").data || [];
+  const { data: posts, refetch } = useFetchPostsByUserId(user?.id || "");
 
   const { isFollowing, handleFollow } = useFollowToggle(sideUserId, userId);
 
@@ -88,6 +90,29 @@ const ProfilePage = () => {
                 />
               </DialogContent>
             </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="link"
+                  className="text-sm font-semibold p-0 ml-4"
+                >
+                  {following?.length} Following
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Following</DialogTitle>
+                </DialogHeader>
+                <FollowerList
+                  followers={
+                    following?.map((f) => ({
+                      username: f.name,
+                      userId: f.id,
+                    })) || []
+                  }
+                />
+              </DialogContent>
+            </Dialog>
           </div>
           {!isMyProfile && (
             <div className="justify-self-end mx-6 mb-4">
@@ -105,9 +130,10 @@ const ProfilePage = () => {
           <div className="flex justify-center w-full">
             <div className="max-w-screen-lg w-full">
               <PostList
-                posts={posts}
+                posts={posts ?? []}
                 token={token}
                 currentUserId={sideUserId}
+                refetch={refetch}
               />
             </div>
           </div>

@@ -10,17 +10,22 @@ interface IPostListProps {
   posts: IPost[];
   token: string;
   currentUserId: string;
+  refetch: () => void;
 }
 
-export function PostList({ posts, token, currentUserId }: IPostListProps) {
+export function PostList({
+  posts,
+  token,
+  currentUserId,
+  refetch,
+}: IPostListProps) {
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
   const [openEdit, setOpenEdit] = useState(false);
   const [content, setContent] = useState(posts[0]?.content || "");
   const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const { editPost, isSubmitting } = useEditPost();
+  const { editPost, isSubmitting } = useEditPost(refetch);
   const { deletePost } = useDeletePost();
 
   const handleOpenChange = (postId: string, isOpen: boolean) => {

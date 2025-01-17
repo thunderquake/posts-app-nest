@@ -80,6 +80,22 @@ export class UserService {
     }));
   }
 
+  async getFollowing(userId: string): Promise<Partial<User>[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user.following.map((followedUser) => ({
+      id: followedUser.id,
+      name: followedUser.name,
+    }));
+  }
+
   async followUser(followUserDto: FollowUserDto): Promise<User> {
     const { userId, targetUserId } = followUserDto;
 

@@ -1,6 +1,7 @@
+import { useAuthStore } from "@/stores/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { apiInstance, handleRequest } from "../postsService";
-import { useFetchPosts } from "./useFetchPosts";
+import { useFetchPostsByUserId } from "./useFetchPostsByUserId";
 
 const editPostRequest = async (
   token: string,
@@ -19,8 +20,9 @@ const editPostRequest = async (
   });
 };
 
-export const useEditPost = () => {
-  const { refetch } = useFetchPosts();
+export const useEditPost = (refetch: () => void) => {
+  const userId = useAuthStore?.getState()?.userId || "";
+  const { refetch: refetchPostsByUserId } = useFetchPostsByUserId(userId);
 
   const { mutate: editPost, isPending: isSubmitting } = useMutation({
     mutationFn: ({
@@ -34,6 +36,7 @@ export const useEditPost = () => {
     }) => editPostRequest(token, postId, content),
     onSuccess: () => {
       refetch();
+      refetchPostsByUserId();
     },
     onError: (error) => {
       console.error("Error editing post:", error);

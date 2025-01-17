@@ -1,10 +1,11 @@
+import { IPost } from "@/components/PostCard";
 import { useAuthStore } from "@/stores/authStore";
 import { useQuery } from "@tanstack/react-query";
 import { apiInstance, handleRequest } from "../postsService";
 
 const getPostsByUserIdRequest = async (userId: string, token: string) => {
   return handleRequest(async () => {
-    const response = await apiInstance.get(`/posts/user/${userId}`, {
+    const response = await apiInstance.get<IPost[]>(`/posts/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

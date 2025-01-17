@@ -40,6 +40,11 @@ export class UserController {
     return this.userService.getFollowers(id);
   }
 
+  @Get(':id/following')
+  async getFollowing(@Param('id') id: string) {
+    return this.userService.getFollowing(id);
+  }
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
