@@ -96,7 +96,7 @@ export function PostList({
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onCancel={() => setDeleteDialogOpen(false)}
-        onDelete={handleDelete}
+        onConfirm={handleDelete}
         title="Confirm Delete"
         description="Are you sure you want to delete this post? This action cannot be undone."
       />

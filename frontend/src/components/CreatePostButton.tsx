@@ -16,8 +16,7 @@ export function CreatePostButton({ token }: { token: string }) {
     e.preventDefault();
 
     try {
-      const result = await createPost({ token, post: { content, userId } });
-      console.log("Created post:", result);
+      createPost({ token, post: { content, userId } });
       setContent("");
       setOpen(false);
     } catch (error) {

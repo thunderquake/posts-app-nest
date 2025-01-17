@@ -13,22 +13,22 @@ interface PostAlertDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCancel: () => void;
-  onDelete: () => void;
+  onConfirm: () => void;
   title: string;
   description: string;
   cancelText?: string;
-  deleteText?: string;
+  confirmText?: string;
 }
 
 export default function PostAlertDialog({
   open,
   onOpenChange,
   onCancel,
-  onDelete,
+  onConfirm,
   title,
   description,
   cancelText = "Cancel",
-  deleteText = "Delete",
+  confirmText = "Delete",
 }: PostAlertDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -39,7 +39,9 @@ export default function PostAlertDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete}>{deleteText}</AlertDialogAction>
+          <AlertDialogAction onClick={onConfirm}>
+            {confirmText}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -152,6 +152,14 @@ export class UserService {
     });
   }
 
+  async validateUsername(username: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { name: username },
+    });
+
+    return !user;
+  }
+
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.preload({
       id,

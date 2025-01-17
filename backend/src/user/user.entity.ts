@@ -25,6 +25,9 @@ export class User {
   @Column({ default: false })
   public isVerified: boolean;
 
+  @Column({ default: '' })
+  description: string;
+
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 

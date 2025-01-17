@@ -8,6 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { Public } from 'src/decorators/public.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user-dto';
 import { UnfollowUserDto } from './dto/unfollow-user-dto';
@@ -33,6 +34,14 @@ export class UserController {
     return this.userService.findByUsername(username, {
       select: selectedFields,
     });
+  }
+
+  @Get('validate/:username')
+  @Public()
+  async validateUsername(
+    @Param('username') username: string,
+  ): Promise<boolean> {
+    return this.userService.validateUsername(username);
   }
 
   @Get(':id/followers')

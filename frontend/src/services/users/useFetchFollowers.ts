@@ -21,10 +21,9 @@ const fetchFollowersRequest = async (
     return response.data;
   });
 };
+
 export const useFetchFollowers = (userId: string) => {
   const token = useAuthStore?.getState()?.access_token || "";
-
-  console.log();
 
   return useQuery({
     queryKey: ["followers", userId],

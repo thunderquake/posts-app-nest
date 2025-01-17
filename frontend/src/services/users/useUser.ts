@@ -2,12 +2,13 @@ import { useAuthStore } from "@/stores/authStore";
 import { useQuery } from "@tanstack/react-query";
 import { apiInstance, handleRequest } from "../postsService";
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;
   hashedPassword: string;
   isVerified: boolean;
+  description: string;
 }
 
 interface UseUserOptions {
