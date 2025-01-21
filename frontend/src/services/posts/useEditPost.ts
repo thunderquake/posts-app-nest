@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/stores/authStore";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { apiInstance, handleRequest } from "../postsService";
 import { useFetchPostsByUserId } from "./useFetchPostsByUserId";
 
@@ -39,6 +40,7 @@ export const useEditPost = (refetch: () => void) => {
       refetchPostsByUserId();
     },
     onError: (error) => {
+      toast.error("Error editing post");
       console.error("Error editing post:", error);
     },
   });

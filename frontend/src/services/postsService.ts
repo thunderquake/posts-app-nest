@@ -11,16 +11,16 @@ export const handleRequest = async <T>(
     return await requestFn();
   } catch (e) {
     if (axios.isAxiosError(e)) {
-      const errorMessage =
-        (e.response?.data?.message as string)?.toLowerCase() ||
-        "An error occurred.";
+      const errorMessage = e.response?.data?.message || "An error occurred.";
       const errorStatus = e.response?.status || 500;
+
       console.error(
         `Request failed with status ${errorStatus}: ${errorMessage}`
       );
-      throw new Error(errorMessage);
-    } else {
-      throw new Error("An unexpected error occurred.");
+
+      throw e;
     }
+
+    throw e;
   }
 };

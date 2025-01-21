@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -165,6 +166,19 @@ export class UserService {
       id,
       ...updateUserDto,
     });
+
+    if (updateUserDto.name) {
+      const existingUserWithUsername = await this.userRepository.findOne({
+        where: { name: updateUserDto.name },
+      });
+
+      if (existingUserWithUsername && existingUserWithUsername.id !== id) {
+        throw new ForbiddenException({
+          status: 403,
+          message: 'Username already taken',
+        });
+      }
+    }
 
     if (!user) {
       throw new NotFoundException(`User ${user.name}  not found`);

@@ -39,7 +39,10 @@ export const useEditUser = (
     }: {
       userId: string;
       updateData: UpdateUser;
-    }) => updateUserRequest(userId, updateData, token),
+    }) => {
+      console.log(updateData);
+      return updateUserRequest(userId, updateData, token);
+    },
 
     onSuccess: () => {
       refetchUser();

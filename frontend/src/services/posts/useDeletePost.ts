@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { apiInstance, handleRequest } from "../postsService";
 import { useFetchPosts } from "./useFetchPosts";
 
@@ -21,6 +22,7 @@ export const useDeletePost = () => {
       refetch();
     },
     onError: (error) => {
+      toast.error("Error deleting post");
       console.error("Error deleting post:", error);
     },
   });

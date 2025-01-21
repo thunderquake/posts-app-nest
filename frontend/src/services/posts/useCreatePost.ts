@@ -1,5 +1,6 @@
 import { PostParams } from "@/types/postsServiceTypes";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { apiInstance, handleRequest } from "../postsService";
 import { useFetchPosts } from "./useFetchPosts";
 
@@ -27,6 +28,7 @@ export const useCreatePost = () => {
       refetch();
     },
     onError: (error) => {
+      toast.error("Error creating post");
       console.error("Error creating post:", error);
     },
   });
