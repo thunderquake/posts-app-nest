@@ -7,10 +7,10 @@ import {
   Post as PostRequest,
   Put,
 } from '@nestjs/common';
+import { Post } from '../entities/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UUIDDto } from './dto/uuid.dto';
-import { Post } from './post.entity';
 import IPost, { PostService } from './post.service';
 
 @Controller('posts')

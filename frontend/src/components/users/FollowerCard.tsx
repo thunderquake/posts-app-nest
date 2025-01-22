@@ -1,7 +1,7 @@
 import { useFollowToggle } from "@/services/users/useFollowToggle";
 import { useAuthStore } from "@/stores/authStore";
+import { Button } from "../ui/button";
 import { Follower } from "./FollowerList";
-import { Button } from "./ui/button";
 
 const FollowerCard = (follower: Follower) => {
   const sideUserId = useAuthStore?.getState()?.userId || "";

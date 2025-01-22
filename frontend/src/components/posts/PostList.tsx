@@ -1,10 +1,10 @@
 import { useDeletePost } from "@/services/posts/useDeletePost";
 import { useEditPost } from "@/services/posts/useEditPost";
 import { useState } from "react";
-import PostAlertDialog from "./PostAlertDialog";
+import PostAlertDialog from "../PostAlertDialog";
+import { Dialog } from "../ui/dialog";
 import PostCard, { IPost } from "./PostCard";
 import PostContentModal from "./PostContentModal";
-import { Dialog } from "./ui/dialog";
 
 interface IPostListProps {
   posts: IPost[];

@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/tabs";
-import { LoginCard } from "./LoginCard";
-import { SignupCard } from "./SignupCard";
+import LoginCard from "./LoginCard";
+import SignupCard from "./SignupCard";
 
 export default function AuthForms() {
   return (

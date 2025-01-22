@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Post } from '../post/post.entity';
+import { Post } from './post.entity';
 
 @Entity()
 export class User {
@@ -23,7 +23,7 @@ export class User {
   hashedPassword: string;
 
   @Column({ default: false })
-  public isVerified: boolean;
+  isVerified: boolean;
 
   @Column({ default: '' })
   description: string;

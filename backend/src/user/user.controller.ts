@@ -9,11 +9,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { Public } from 'src/decorators/public.decorator';
+import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user-dto';
 import { UnfollowUserDto } from './dto/unfollow-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
-import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('users')

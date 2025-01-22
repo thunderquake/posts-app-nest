@@ -1,5 +1,4 @@
-import FollowerList from "@/components/FollowerList";
-import { PostList } from "@/components/PostList";
+import { PostList } from "@/components/posts/PostList";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import UserEditForm from "@/components/UserEditForm";
+import FollowerList from "@/components/users/FollowerList";
+import UserEditForm from "@/components/users/UserEditForm";
 import { AppSidebar } from "@/components/UserSidebar";
 import { useFetchPostsByUserId } from "@/services/posts/useFetchPostsByUserId";
 import { useFetchFollowers } from "@/services/users/useFetchFollowers";

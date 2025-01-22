@@ -1,4 +1,4 @@
-import PostContentModal from "@/components/PostContentModal";
+import PostContentModal from "@/components/posts/PostContentModal";
 import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@ui/button";
 import { Dialog, DialogTrigger } from "@ui/dialog";

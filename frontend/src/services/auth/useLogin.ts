@@ -1,4 +1,4 @@
-import { LoginFormData } from "@/components/LoginCard";
+import { LoginFormData } from "@/components/auth/LoginCard";
 import { useAuthStore } from "@/stores/authStore";
 import { LogInParams } from "@/types/postsServiceTypes";
 import { useMutation } from "@tanstack/react-query";
