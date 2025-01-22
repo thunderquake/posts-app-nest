@@ -23,10 +23,10 @@ import { useParams } from "react-router-dom";
 const ProfilePage = () => {
   const { username: urlUsername } = useParams<{ username: string }>();
 
-  const sideUsername = useAuthStore((state) => state.username);
-  const sideEmail = useAuthStore((state) => state.email);
-  const token = useAuthStore((state) => state.access_token);
-  const sideUserId = useAuthStore((state) => state.userId);
+  const sideUsername = useAuthStore((state) => state.username) || "";
+  const sideEmail = useAuthStore((state) => state.email) || "";
+  const token = useAuthStore((state) => state.access_token) || "";
+  const sideUserId = useAuthStore((state) => state.userId) || "";
 
   const { data: user, refetch: refetchUser } = useUser(urlUsername || "");
 

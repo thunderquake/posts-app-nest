@@ -9,7 +9,7 @@ import { useCreatePost } from "@/services/posts/useCreatePost";
 export function CreatePostButton({ token }: { token: string }) {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
-  const userId = useAuthStore((state) => state.userId);
+  const userId = useAuthStore((state) => state.userId) || "";
   const { createPost, isSubmitting } = useCreatePost();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

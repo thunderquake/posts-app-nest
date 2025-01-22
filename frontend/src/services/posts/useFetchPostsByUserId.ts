@@ -1,4 +1,4 @@
-import { IPost } from "@/components/PostCard";
+import { IPost } from "@/components/posts/PostCard";
 import { useAuthStore } from "@/stores/authStore";
 import { useQuery } from "@tanstack/react-query";
 import { apiInstance, handleRequest } from "../postsService";
