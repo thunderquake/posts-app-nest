@@ -23,7 +23,7 @@ const followUserRequest = async (
 };
 
 export const useFollow = () => {
-  const token = useAuthStore?.getState()?.access_token || "";
+  const token = useAuthStore((state) => state.access_token) || "";
   return useMutation({
     mutationFn: (followData: { userId: string; targetUserId: string }) =>
       followUserRequest(followData, token),

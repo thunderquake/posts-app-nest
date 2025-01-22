@@ -25,7 +25,7 @@ const getUserRequest = async (userId: string, token: string): Promise<User> => {
 };
 
 export const useUser = (userId: string, options?: UseUserOptions) => {
-  const token = useAuthStore?.getState()?.access_token || "";
+  const token = useAuthStore((state) => state.access_token) || "";
 
   return useQuery<User>({
     queryKey: ["user", userId, options?.select],

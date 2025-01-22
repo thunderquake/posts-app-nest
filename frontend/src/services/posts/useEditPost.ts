@@ -22,7 +22,7 @@ const editPostRequest = async (
 };
 
 export const useEditPost = (refetch: () => void) => {
-  const userId = useAuthStore?.getState()?.userId || "";
+  const userId = useAuthStore((state) => state.userId) || "";
   const { refetch: refetchPostsByUserId } = useFetchPostsByUserId(userId);
 
   const { mutate: editPost, isPending: isSubmitting } = useMutation({

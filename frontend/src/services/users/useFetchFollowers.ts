@@ -23,7 +23,7 @@ const fetchFollowersRequest = async (
 };
 
 export const useFetchFollowers = (userId: string) => {
-  const token = useAuthStore?.getState()?.access_token || "";
+  const token = useAuthStore((state) => state.access_token) || "";
 
   return useQuery({
     queryKey: ["followers", userId],

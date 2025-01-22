@@ -4,10 +4,10 @@ import { Button } from "../ui/button";
 import { Follower } from "./FollowerList";
 
 const FollowerCard = (follower: Follower) => {
-  const sideUserId = useAuthStore?.getState()?.userId || "";
+  const sideUserId = useAuthStore((state) => state.userId) || "";
 
   const isMyProfile =
-    follower.username === useAuthStore?.getState()?.username || "";
+    follower.username === useAuthStore((state) => state.username) || "";
 
   const { isFollowing, handleFollow } = useFollowToggle(
     sideUserId,

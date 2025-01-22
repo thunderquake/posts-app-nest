@@ -78,9 +78,10 @@ const UserEditForm = ({
       {
         onSuccess: () => {
           if (updateData.name) {
-            useAuthStore
-              .getState()
-              .setUserDetails(updateData.name, initialData.email);
+            useAuthStore.setState((state) => ({
+              ...state,
+              username: updateData.name,
+            }));
             navigate(`/profile/${updateData.name}`);
           }
         },

@@ -2,11 +2,9 @@ import AuthForms from "@/components/auth/AuthForms";
 
 const SignUpPage = () => {
   return (
-    <>
-      <div className="w-full h-screen mx-auto my-auto pb-16 content-center">
-        <AuthForms />
-      </div>
-    </>
+    <div className="w-full h-screen mx-auto my-auto pb-16 content-center">
+      <AuthForms />
+    </div>
   );
 };
 

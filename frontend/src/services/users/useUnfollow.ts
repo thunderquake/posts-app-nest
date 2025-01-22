@@ -27,7 +27,7 @@ const unfollowUserRequest = async (
 };
 
 export const useUnfollow = () => {
-  const token = useAuthStore?.getState()?.access_token || "";
+  const token = useAuthStore((state) => state.access_token) || "";
   return useMutation({
     mutationFn: (unfollowData: { userId: string; targetUserId: string }) =>
       unfollowUserRequest(unfollowData, token),

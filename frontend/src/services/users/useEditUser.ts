@@ -30,7 +30,7 @@ export const useEditUser = (
   refetchUser: () => void,
   refetchPosts: () => void
 ) => {
-  const token = useAuthStore?.getState()?.access_token || "";
+  const token = useAuthStore((state) => state.access_token) || "";
 
   return useMutation({
     mutationFn: ({

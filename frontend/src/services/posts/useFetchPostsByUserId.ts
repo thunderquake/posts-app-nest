@@ -13,7 +13,7 @@ const getPostsByUserIdRequest = async (userId: string, token: string) => {
 };
 
 export const useFetchPostsByUserId = (userId: string) => {
-  const token = useAuthStore?.getState()?.access_token || "";
+  const token = useAuthStore((state) => state.access_token) || "";
 
   return useQuery({
     queryKey: ["posts", userId],

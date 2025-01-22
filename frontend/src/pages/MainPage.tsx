@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
-  const username = useAuthStore?.getState()?.username || "";
-  const email = useAuthStore?.getState()?.email || "";
-  const token = useAuthStore?.getState()?.access_token || "";
-  const currentUserId = useAuthStore?.getState()?.userId || "";
+  const username = useAuthStore((state) => state.username) || "";
+  const email = useAuthStore((state) => state.email) || "";
+  const token = useAuthStore((state) => state.access_token) || "";
+  const currentUserId = useAuthStore((state) => state.userId) || "";
 
   const [posts, setPosts] = useState<IPost[]>([]);
   const { data: postsData, isLoading, error, refetch } = useFetchPosts();

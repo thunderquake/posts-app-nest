@@ -12,7 +12,7 @@ const getAllPostsRequest = async (token: string) => {
 };
 
 export const useFetchPosts = () => {
-  const token = useAuthStore?.getState()?.access_token || "";
+  const token = useAuthStore((state) => state.access_token) || "";
 
   return useQuery({
     queryKey: ["posts"],
