@@ -1,10 +1,6 @@
-import { Button } from "@/components/ui/button";
-import {
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@ui/button";
+import { DialogContent, DialogHeader, DialogTitle } from "@ui/dialog";
+import { Textarea } from "@ui/textarea";
 
 interface PostContentModalProps {
   open: boolean;

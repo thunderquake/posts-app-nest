@@ -7,10 +7,10 @@ import {
   Post as PostRequest,
   Put,
 } from '@nestjs/common';
+import { Post } from '../entities/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UUIDDto } from './dto/uuid.dto';
-import { Post } from './post.entity';
 import IPost, { PostService } from './post.service';
 
 @Controller('posts')
@@ -25,6 +25,11 @@ export class PostController {
   @Get(':id')
   async findOne(@Param() UUIDDto: UUIDDto) {
     return this.postService.findOne(UUIDDto);
+  }
+
+  @Get('user/:id')
+  async findAllByUserId(@Param() UUIDDto: UUIDDto): Promise<IPost[]> {
+    return this.postService.findAllByUserId(UUIDDto.id);
   }
 
   @PostRequest()

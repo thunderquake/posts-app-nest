@@ -2,10 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
+import { Post } from '../entities/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UUIDDto } from './dto/uuid.dto';
-import { Post } from './post.entity';
 
 export default interface IPost {
   id: string;
@@ -28,20 +28,30 @@ export class PostService {
   async findAll(): Promise<IPost[]> {
     return this.postRepository
       .createQueryBuilder('post')
-      .leftJoinAndSelect('post.user', 'user') // Join the user entity
-      .addSelect('user.name') // Only select the user's name
-      .orderBy('post.createdAt', 'DESC') // Order posts by createdAt
-      .getMany()
-      .then((posts) =>
-        posts.map((post) => ({
-          id: post.id,
-          content: post.content,
-          createdAt: post.createdAt,
-          updatedAt: post.updatedAt,
-          userId: post.user.id,
-          user: post.user.name,
-        })),
-      );
+      .select('post.id', 'id')
+      .addSelect('post.content', 'content')
+      .addSelect('post.createdAt', 'createdAt')
+      .addSelect('post.updatedAt', 'updatedAt')
+      .addSelect('user.id', 'userId')
+      .addSelect('user.name', 'user')
+      .leftJoin('post.user', 'user')
+      .orderBy('post.createdAt', 'DESC')
+      .getRawMany();
+  }
+
+  async findAllByUserId(userId: string): Promise<IPost[]> {
+    return this.postRepository
+      .createQueryBuilder('post')
+      .select('post.id', 'id')
+      .addSelect('post.content', 'content')
+      .addSelect('post.createdAt', 'createdAt')
+      .addSelect('post.updatedAt', 'updatedAt')
+      .addSelect('user.id', 'userId')
+      .addSelect('user.name', 'user')
+      .leftJoin('post.user', 'user')
+      .where('post.userId = :userId', { userId })
+      .orderBy('post.createdAt', 'DESC')
+      .getRawMany();
   }
 
   async findOne(UUIDDto: UUIDDto): Promise<Post> {

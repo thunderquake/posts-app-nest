@@ -8,12 +8,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { Public } from 'src/decorators/public.decorator';
+import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user-dto';
-import { GetFollowersDto } from './dto/get-followers-dto';
 import { UnfollowUserDto } from './dto/unfollow-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
-import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -25,19 +25,33 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':userId')
-  async findUserById(
-    @Param('userId') userId: string,
+  @Get(':username')
+  async findUserByUsername(
+    @Param('username') username: string,
     @Query('select') select?: string,
   ): Promise<User> {
     const selectedFields = select?.split(',') as (keyof User)[] | undefined;
-    return this.userService.findById(userId, { select: selectedFields });
+    return this.userService.findByUsername(username, {
+      select: selectedFields,
+    });
   }
 
-  @Get('followers')
-  async getFollowers(@Body() getFollowersDto: GetFollowersDto) {
-    const { userId } = getFollowersDto;
-    return this.userService.getFollowers(userId);
+  @Get('validate/:username')
+  @Public()
+  async validateUsername(
+    @Param('username') username: string,
+  ): Promise<boolean> {
+    return this.userService.validateUsername(username);
+  }
+
+  @Get(':id/followers')
+  async getFollowers(@Param('id') id: string) {
+    return this.userService.getFollowers(id);
+  }
+
+  @Get(':id/following')
+  async getFollowing(@Param('id') id: string) {
+    return this.userService.getFollowing(id);
   }
 
   @Post()

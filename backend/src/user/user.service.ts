@@ -1,15 +1,16 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user-dto';
 import { UnfollowUserDto } from './dto/unfollow-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
-import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,16 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
     return this.userRepository.save(user);
+  }
+
+  async findByUsername(
+    username: string,
+    options?: { select?: (keyof User)[] },
+  ): Promise<User> {
+    return this.userRepository.findOne({
+      where: { name: username },
+      select: options?.select,
+    });
   }
 
   async findById(
@@ -67,6 +78,22 @@ export class UserService {
     return user.followers.map((follower) => ({
       id: follower.id,
       name: follower.name,
+    }));
+  }
+
+  async getFollowing(userId: string): Promise<Partial<User>[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user.following.map((followedUser) => ({
+      id: followedUser.id,
+      name: followedUser.name,
     }));
   }
 
@@ -126,11 +153,32 @@ export class UserService {
     });
   }
 
+  async validateUsername(username: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { name: username },
+    });
+
+    return !user;
+  }
+
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.preload({
       id,
       ...updateUserDto,
     });
+
+    if (updateUserDto.name) {
+      const existingUserWithUsername = await this.userRepository.findOne({
+        where: { name: updateUserDto.name },
+      });
+
+      if (existingUserWithUsername && existingUserWithUsername.id !== id) {
+        throw new ForbiddenException({
+          status: 403,
+          message: 'Username already taken',
+        });
+      }
+    }
 
     if (!user) {
       throw new NotFoundException(`User ${user.name}  not found`);
